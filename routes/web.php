@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\AreaController;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
@@ -22,3 +23,8 @@ $router->get('/usuarios', [UserController::class, 'index'], [AuthMiddleware::cla
 $router->get('/usuarios/crear', [UserController::class, 'create'], [AuthMiddleware::class]);
 $router->post('/usuarios', [UserController::class, 'store'], [AuthMiddleware::class]);
 $router->post('/usuarios/{id}/estado', [UserController::class, 'toggleStatus'], [AuthMiddleware::class]);
+
+$router->get('/areas', [AreaController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/areas/crear', [AreaController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/areas', [AreaController::class, 'store'], [AuthMiddleware::class]);
+$router->post('/areas/{id}/estado', [AreaController::class, 'toggleStatus'], [AuthMiddleware::class]);

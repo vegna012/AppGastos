@@ -8,7 +8,7 @@
 <body>
     <h1>Usuarios</h1>
 
-    <p><a href="/dashboard">Dashboard</a> | <a href="/usuarios/crear">Crear usuario</a></p>
+    <p><a href="/dashboard">Dashboard</a> | <a href="/areas">Áreas</a> | <a href="/usuarios/crear">Crear usuario</a></p>
 
     <?php if (!empty($success)): ?>
         <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
