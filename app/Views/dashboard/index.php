@@ -8,6 +8,8 @@
 <body>
     <h1>Bienvenido <?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?></h1>
 
+    <p><a href="/usuarios">Usuarios</a></p>
+
     <form method="post" action="/logout">
         <button type="submit">Logout</button>
     </form>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
 use App\Controllers\HomeController;
+use App\Controllers\UserController;
 use App\Core\Router;
 use App\Middleware\AuthMiddleware;
 
@@ -16,3 +17,8 @@ $router->post('/login', [AuthController::class, 'login']);
 $router->post('/logout', [AuthController::class, 'logout']);
 
 $router->get('/dashboard', [DashboardController::class, 'index'], [AuthMiddleware::class]);
+
+$router->get('/usuarios', [UserController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/usuarios/crear', [UserController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/usuarios', [UserController::class, 'store'], [AuthMiddleware::class]);
+$router->post('/usuarios/{id}/estado', [UserController::class, 'toggleStatus'], [AuthMiddleware::class]);

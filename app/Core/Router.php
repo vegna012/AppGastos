@@ -29,15 +29,61 @@ class Router
         $method = strtoupper($method);
         $path = $this->normalizePath(parse_url($uri, PHP_URL_PATH) ?? '/');
 
-        if (!isset($this->routes[$method][$path])) {
+        $route = $this->findRoute($method, $path);
+
+        if ($route === null) {
             http_response_code(404);
             echo '404 Not Found';
             return;
         }
 
-        $route = $this->routes[$method][$path];
         $this->runMiddleware($route['middleware']);
         $this->invoke($route['handler']);
+    }
+
+    /** @return array{handler: callable|array{0: class-string, 1: string}, middleware: list<class-string>}|null */
+    private function findRoute(string $method, string $path): ?array
+    {
+        if (isset($this->routes[$method][$path])) {
+            RouteContext::setParams([]);
+            return $this->routes[$method][$path];
+        }
+
+        foreach ($this->routes[$method] as $pattern => $route) {
+            $params = $this->matchPattern($pattern, $path);
+
+            if ($params !== null) {
+                RouteContext::setParams($params);
+                return $route;
+            }
+        }
+
+        return null;
+    }
+
+    /** @return array<string, string>|null */
+    private function matchPattern(string $pattern, string $path): ?array
+    {
+        if (!str_contains($pattern, '{')) {
+            return null;
+        }
+
+        $regex = preg_replace('/\{(\w+)\}/', '(?P<$1>[^/]+)', $pattern);
+        $regex = '#^' . $regex . '$#';
+
+        if (!preg_match($regex, $path, $matches)) {
+            return null;
+        }
+
+        $params = [];
+
+        foreach ($matches as $key => $value) {
+            if (is_string($key)) {
+                $params[$key] = $value;
+            }
+        }
+
+        return $params;
     }
 
   /**
