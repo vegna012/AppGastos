@@ -8,20 +8,20 @@ use RuntimeException;
 
 class Router
 {
-    /** @var array<string, array<string, callable|array{0: class-string, 1: string}>> */
+    /** @var array<string, array<string, array{handler: callable|array{0: class-string, 1: string}, middleware: list<class-string>}> */
     private array $routes = [
         'GET' => [],
         'POST' => [],
     ];
 
-    public function get(string $path, callable|array $handler): void
+    public function get(string $path, callable|array $handler, array $middleware = []): void
     {
-        $this->addRoute('GET', $path, $handler);
+        $this->addRoute('GET', $path, $handler, $middleware);
     }
 
-    public function post(string $path, callable|array $handler): void
+    public function post(string $path, callable|array $handler, array $middleware = []): void
     {
-        $this->addRoute('POST', $path, $handler);
+        $this->addRoute('POST', $path, $handler, $middleware);
     }
 
     public function dispatch(string $method, string $uri): void
@@ -35,12 +35,39 @@ class Router
             return;
         }
 
-        $this->invoke($this->routes[$method][$path]);
+        $route = $this->routes[$method][$path];
+        $this->runMiddleware($route['middleware']);
+        $this->invoke($route['handler']);
     }
 
-    private function addRoute(string $method, string $path, callable|array $handler): void
+  /**
+   * @param callable|array{0: class-string, 1: string} $handler
+   * @param list<class-string> $middleware
+   */
+    private function addRoute(string $method, string $path, callable|array $handler, array $middleware): void
     {
-        $this->routes[$method][$this->normalizePath($path)] = $handler;
+        $this->routes[$method][$this->normalizePath($path)] = [
+            'handler' => $handler,
+            'middleware' => $middleware,
+        ];
+    }
+
+    /** @param list<class-string> $middleware */
+    private function runMiddleware(array $middleware): void
+    {
+        foreach ($middleware as $class) {
+            if (!class_exists($class)) {
+                throw new RuntimeException("Middleware no encontrado: {$class}");
+            }
+
+            $instance = new $class();
+
+            if (!method_exists($instance, 'handle')) {
+                throw new RuntimeException("Middleware sin método handle: {$class}");
+            }
+
+            $instance->handle();
+        }
     }
 
     private function invoke(callable|array $handler): void

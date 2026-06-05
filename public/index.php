@@ -24,6 +24,10 @@ require BASE_PATH . '/config/env.php';
 
 loadEnv(BASE_PATH . '/.env');
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 use App\Core\Router;
 use App\Core\View;
 
