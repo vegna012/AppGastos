@@ -10,6 +10,10 @@
 
     <p><a href="/dashboard">Dashboard</a></p>
 
+    <?php if (!empty($success)): ?>
+        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
+    <?php endif; ?>
+
     <?php if (!empty($error)): ?>
         <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
     <?php endif; ?>

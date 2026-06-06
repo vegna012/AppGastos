@@ -66,5 +66,11 @@
             </td>
         </tr>
     </table>
+
+    <?php if (($expense['estatus_clave'] ?? '') === 'ENVIADO'): ?>
+        <form method="post" action="/aprobaciones/<?= (int) $expense['id_gasto_cabecera'] ?>/aprobar">
+            <button type="submit">Aprobar</button>
+        </form>
+    <?php endif; ?>
 </body>
 </html>

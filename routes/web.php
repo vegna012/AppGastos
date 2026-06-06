@@ -45,3 +45,4 @@ $router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddl
 
 $router->get('/aprobaciones', [ApprovalController::class, 'index'], [AuthMiddleware::class]);
 $router->get('/aprobaciones/{id}', [ApprovalController::class, 'show'], [AuthMiddleware::class]);
+$router->post('/aprobaciones/{id}/aprobar', [ApprovalController::class, 'approve'], [AuthMiddleware::class]);
