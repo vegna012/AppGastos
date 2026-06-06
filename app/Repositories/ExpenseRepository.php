@@ -71,7 +71,7 @@ class ExpenseRepository extends Repository
         return $statement->fetchColumn() !== false;
     }
 
-    public function getDraftStatusId(): ?int
+    public function getStatusIdByKey(string $key): ?int
     {
         $statement = $this->db->prepare(
             'SELECT id_estatus_gasto FROM estatus_gasto
@@ -79,10 +79,20 @@ class ExpenseRepository extends Repository
                AND activo = 1
              LIMIT 1'
         );
-        $statement->execute(['clave' => 'BORRADOR']);
+        $statement->execute(['clave' => $key]);
         $id = $statement->fetchColumn();
 
         return $id !== false ? (int) $id : null;
+    }
+
+    public function getDraftStatusId(): ?int
+    {
+        return $this->getStatusIdByKey('BORRADOR');
+    }
+
+    public function validateDraft(int $expenseId): bool
+    {
+        return $this->isDraft($expenseId);
     }
 
     public function folioExists(string $folio): bool
@@ -232,6 +242,35 @@ class ExpenseRepository extends Repository
             'id_gasto_cabecera' => $expenseId,
             'id_usuario' => $userId,
             'id_estatus_gasto' => $draftStatusId,
+        ]);
+
+        return $statement->rowCount() > 0;
+    }
+
+    public function sendExpense(
+        int $expenseId,
+        int $userId,
+        int $draftStatusId,
+        int $sentStatusId
+    ): bool {
+        $statement = $this->db->prepare(
+            'UPDATE gastos_cabecera
+             SET id_estatus_gasto = :id_estatus_gasto,
+                 fecha_envio_aprobacion = CURRENT_TIMESTAMP,
+                 actualizado_en = CURRENT_TIMESTAMP,
+                 actualizado_por = :actualizado_por
+             WHERE id_gasto_cabecera = :id_gasto_cabecera
+               AND id_usuario = :id_usuario
+               AND id_estatus_gasto = :id_estatus_borrador
+               AND eliminado_en IS NULL'
+        );
+
+        $statement->execute([
+            'id_estatus_gasto' => $sentStatusId,
+            'actualizado_por' => $userId,
+            'id_gasto_cabecera' => $expenseId,
+            'id_usuario' => $userId,
+            'id_estatus_borrador' => $draftStatusId,
         ]);
 
         return $statement->rowCount() > 0;

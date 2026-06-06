@@ -39,4 +39,5 @@ $router->get('/gastos/crear', [ExpenseController::class, 'create'], [AuthMiddlew
 $router->post('/gastos', [ExpenseController::class, 'store'], [AuthMiddleware::class]);
 $router->get('/gastos/{id}/editar', [ExpenseController::class, 'edit'], [AuthMiddleware::class]);
 $router->post('/gastos/{id}/actualizar', [ExpenseController::class, 'update'], [AuthMiddleware::class]);
+$router->post('/gastos/{id}/enviar', [ExpenseController::class, 'send'], [AuthMiddleware::class]);
 $router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddleware::class]);

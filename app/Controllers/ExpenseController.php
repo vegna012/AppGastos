@@ -207,6 +207,57 @@ class ExpenseController extends Controller
         $this->redirect('/mis-gastos');
     }
 
+    public function send(): void
+    {
+        $userId = $this->requireAuthenticatedUserId();
+        $expenseId = (int) (RouteContext::param('id') ?? 0);
+
+        if ($expenseId <= 0) {
+            $_SESSION['expense_error'] = 'Gasto no encontrado.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $expense = $this->expenseRepository->getExpenseById($expenseId);
+
+        if ($expense === null) {
+            $_SESSION['expense_error'] = 'Gasto no encontrado.';
+            $this->redirect('/mis-gastos');
+        }
+
+        if ((int) $expense['id_usuario'] !== $userId) {
+            $_SESSION['expense_error'] = 'No tiene permiso para enviar este gasto.';
+            $this->redirect('/mis-gastos');
+        }
+
+        if (!$this->expenseRepository->validateDraft($expenseId)) {
+            $_SESSION['expense_error'] = 'Solo se pueden enviar gastos en estado Borrador.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $draftStatusId = $this->expenseRepository->getDraftStatusId();
+        $sentStatusId = $this->expenseRepository->getStatusIdByKey('ENVIADO');
+
+        if ($draftStatusId === null || $sentStatusId === null) {
+            $_SESSION['expense_error'] = 'No se pudo determinar el estatus del gasto.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $sent = $this->expenseRepository->sendExpense(
+            $expenseId,
+            $userId,
+            $draftStatusId,
+            $sentStatusId
+        );
+
+        if (!$sent) {
+            $_SESSION['expense_error'] = 'No se pudo enviar el gasto. Verifique que siga en estado Borrador.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $_SESSION['expense_success'] = 'Gasto enviado a aprobación correctamente.';
+        $this->redirect('/mis-gastos');
+    }
+
     private function requireAuthenticatedUserId(): int
     {
         $userId = isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : 0;

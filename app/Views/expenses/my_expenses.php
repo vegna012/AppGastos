@@ -53,6 +53,12 @@
                         <td>
                             <?php if (($expense['estatus_clave'] ?? '') === 'BORRADOR'): ?>
                                 <a href="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/editar">Editar</a>
+                                |
+                                <form method="post"
+                                      action="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/enviar"
+                                      style="display:inline;">
+                                    <button type="submit">Enviar</button>
+                                </form>
                             <?php else: ?>
                                 —
                             <?php endif; ?>
