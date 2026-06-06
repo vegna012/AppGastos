@@ -55,11 +55,29 @@
                    value="<?= htmlspecialchars((string) ($old['fecha_gasto'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
         </div>
         <br>
+        <?php if ($budgetAvailability !== null): ?>
+            <div>
+                <strong>Disponibilidad presupuestal</strong><br>
+                <?php if (!$budgetAvailability['configured']): ?>
+                    <p>Sin presupuesto configurado para el periodo.</p>
+                <?php else: ?>
+                    <p>
+                        Presupuesto: $<?= htmlspecialchars(number_format($budgetAvailability['presupuesto'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?><br>
+                        Consumo: $<?= htmlspecialchars(number_format($budgetAvailability['consumo'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?><br>
+                        Disponible: $<?= htmlspecialchars(number_format($budgetAvailability['disponible'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+                <?php endif; ?>
+            </div>
+            <br>
+        <?php endif; ?>
         <div>
             <label for="observaciones">Observaciones (opcional)</label><br>
             <textarea id="observaciones" name="observaciones" rows="4" cols="50"><?= htmlspecialchars((string) ($old['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
         </div>
         <br>
+        <button type="submit" formaction="/gastos/crear" formmethod="get" formnovalidate>
+            Consultar presupuesto
+        </button>
         <button type="submit">Guardar</button>
     </form>
 </body>

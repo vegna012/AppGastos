@@ -6,24 +6,38 @@ namespace App\Controllers;
 
 use App\Core\Controller;
 use App\Core\RouteContext;
+use App\Repositories\BudgetAvailabilityRepository;
 use App\Repositories\ExpenseRepository;
 
 class ExpenseController extends Controller
 {
     private ExpenseRepository $expenseRepository;
+    private BudgetAvailabilityRepository $budgetAvailabilityRepository;
 
     public function __construct()
     {
         $this->expenseRepository = new ExpenseRepository();
+        $this->budgetAvailabilityRepository = new BudgetAvailabilityRepository();
     }
 
     public function create(): void
     {
+        $old = $_SESSION['expense_form_old'] ?? [];
+
+        if (isset($_GET['id_area'])) {
+            $old['id_area'] = (string) $_GET['id_area'];
+        }
+
+        if (isset($_GET['fecha_gasto'])) {
+            $old['fecha_gasto'] = (string) $_GET['fecha_gasto'];
+        }
+
         $this->render('expenses/create', [
             'areas' => $this->expenseRepository->getActiveAreas(),
             'costCenters' => $this->expenseRepository->getActiveCostCenters(),
             'errors' => $_SESSION['expense_form_errors'] ?? [],
-            'old' => $_SESSION['expense_form_old'] ?? [],
+            'old' => $old,
+            'budgetAvailability' => $this->resolveBudgetAvailability($old),
         ]);
 
         unset($_SESSION['expense_form_errors'], $_SESSION['expense_form_old']);
@@ -337,5 +351,34 @@ class ExpenseController extends Controller
         }
 
         return [$errors, $areaId, $costCenterId, $expenseDate, $observations];
+    }
+
+    /** @param array<string, string> $old */
+    private function resolveBudgetAvailability(array $old): ?array
+    {
+        $areaId = (int) ($old['id_area'] ?? 0);
+        $expenseDateRaw = trim((string) ($old['fecha_gasto'] ?? ''));
+
+        if ($areaId <= 0 || $expenseDateRaw === '') {
+            return null;
+        }
+
+        $parsedDate = \DateTimeImmutable::createFromFormat('Y-m-d', $expenseDateRaw);
+        $dateErrors = \DateTimeImmutable::getLastErrors();
+
+        if (
+            $parsedDate === false
+            || ($dateErrors['warning_count'] ?? 0) > 0
+            || ($dateErrors['error_count'] ?? 0) > 0
+            || $parsedDate->format('Y-m-d') !== $expenseDateRaw
+        ) {
+            return null;
+        }
+
+        return $this->budgetAvailabilityRepository->getAvailability(
+            $areaId,
+            (int) $parsedDate->format('Y'),
+            (int) $parsedDate->format('n')
+        );
     }
 }
