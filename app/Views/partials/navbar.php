@@ -28,6 +28,9 @@ $isActive = static function (string $path) use ($currentPath): string {
                     <a class="nav-link<?= $isActive('/areas') ?>" href="/areas">Áreas</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link<?= $isActive('/centros-costos') ?>" href="/centros-costos">Centros de Costos</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link<?= $isActive('/presupuestos') ?>" href="/presupuestos">Presupuestos</a>
                 </li>
                 <li class="nav-item">

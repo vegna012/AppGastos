@@ -6,6 +6,7 @@ use App\Controllers\ApprovalController;
 use App\Controllers\AreaController;
 use App\Controllers\AuthController;
 use App\Controllers\BudgetController;
+use App\Controllers\CostCenterController;
 use App\Controllers\DashboardController;
 use App\Controllers\ExpenseController;
 use App\Controllers\HomeController;
@@ -38,6 +39,11 @@ $router->get('/areas', [AreaController::class, 'index'], [AuthMiddleware::class]
 $router->get('/areas/crear', [AreaController::class, 'create'], [AuthMiddleware::class]);
 $router->post('/areas', [AreaController::class, 'store'], [AuthMiddleware::class]);
 $router->post('/areas/{id}/estado', [AreaController::class, 'toggleStatus'], [AuthMiddleware::class]);
+
+$router->get('/centros-costos', [CostCenterController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/centros-costos/crear', [CostCenterController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/centros-costos', [CostCenterController::class, 'store'], [AuthMiddleware::class]);
+$router->post('/centros-costos/{id}/estado', [CostCenterController::class, 'toggleStatus'], [AuthMiddleware::class]);
 
 $router->get('/presupuestos', [BudgetController::class, 'index'], [AuthMiddleware::class]);
 $router->get('/presupuestos/crear', [BudgetController::class, 'create'], [AuthMiddleware::class]);

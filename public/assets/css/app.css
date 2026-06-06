@@ -39,3 +39,11 @@ main.app-main {
 .page-actions {
     margin-bottom: 1rem;
 }
+
+.app-table-wrap {
+    margin-bottom: 1.5rem;
+}
+
+.page-header .h3 {
+    color: #212529;
+}

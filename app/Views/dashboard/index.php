@@ -26,6 +26,15 @@
     <div class="col-sm-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body d-flex flex-column">
+                <h2 class="h5 card-title">Centros de Costos</h2>
+                <p class="card-text text-muted small">Administrar centros de costo por área.</p>
+                <a href="/centros-costos" class="btn btn-primary mt-auto align-self-start">Ir a Centros de Costos</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body d-flex flex-column">
                 <h2 class="h5 card-title">Presupuestos</h2>
                 <p class="card-text text-muted small">Consultar y crear presupuestos.</p>
                 <a href="/presupuestos" class="btn btn-primary mt-auto align-self-start">Ir a Presupuestos</a>
