@@ -8,7 +8,13 @@
 <body>
     <h1>Bienvenido <?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?></h1>
 
-    <p><a href="/usuarios">Usuarios</a> | <a href="/areas">Áreas</a> | <a href="/presupuestos">Presupuestos</a></p>
+    <p>
+        <a href="/usuarios">Usuarios</a> |
+        <a href="/areas">Áreas</a> |
+        <a href="/presupuestos">Presupuestos</a> |
+        <a href="/gastos/crear">Gastos</a> |
+        <a href="/mis-gastos">Mis Gastos</a>
+    </p>
 
     <form method="post" action="/logout">
         <button type="submit">Logout</button>

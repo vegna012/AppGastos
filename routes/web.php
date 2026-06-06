@@ -6,6 +6,7 @@ use App\Controllers\AreaController;
 use App\Controllers\AuthController;
 use App\Controllers\BudgetController;
 use App\Controllers\DashboardController;
+use App\Controllers\ExpenseController;
 use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Core\Router;
@@ -33,3 +34,7 @@ $router->post('/areas/{id}/estado', [AreaController::class, 'toggleStatus'], [Au
 $router->get('/presupuestos', [BudgetController::class, 'index'], [AuthMiddleware::class]);
 $router->get('/presupuestos/crear', [BudgetController::class, 'create'], [AuthMiddleware::class]);
 $router->post('/presupuestos', [BudgetController::class, 'store'], [AuthMiddleware::class]);
+
+$router->get('/gastos/crear', [ExpenseController::class, 'create'], [AuthMiddleware::class]);
+$router->post('/gastos', [ExpenseController::class, 'store'], [AuthMiddleware::class]);
+$router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddleware::class]);
