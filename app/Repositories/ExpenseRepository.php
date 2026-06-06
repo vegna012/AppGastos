@@ -145,6 +145,98 @@ class ExpenseRepository extends Repository
         return (int) $this->db->lastInsertId();
     }
 
+    /** @return array<string, mixed>|null */
+    public function getExpenseById(int $expenseId): ?array
+    {
+        $statement = $this->db->prepare(
+            'SELECT g.id_gasto_cabecera, g.id_usuario, g.id_area, g.id_centro_costo,
+                    g.fecha_gasto, g.observaciones, g.id_estatus_gasto,
+                    eg.clave AS estatus_clave
+             FROM gastos_cabecera g
+             INNER JOIN estatus_gasto eg ON eg.id_estatus_gasto = g.id_estatus_gasto
+             WHERE g.id_gasto_cabecera = :id_gasto_cabecera
+               AND g.eliminado_en IS NULL
+             LIMIT 1'
+        );
+        $statement->execute(['id_gasto_cabecera' => $expenseId]);
+        $expense = $statement->fetch();
+
+        return $expense !== false ? $expense : null;
+    }
+
+    public function isOwner(int $expenseId, int $userId): bool
+    {
+        $statement = $this->db->prepare(
+            'SELECT 1 FROM gastos_cabecera
+             WHERE id_gasto_cabecera = :id_gasto_cabecera
+               AND id_usuario = :id_usuario
+               AND eliminado_en IS NULL
+             LIMIT 1'
+        );
+        $statement->execute([
+            'id_gasto_cabecera' => $expenseId,
+            'id_usuario' => $userId,
+        ]);
+
+        return $statement->fetchColumn() !== false;
+    }
+
+    public function isDraft(int $expenseId): bool
+    {
+        $statement = $this->db->prepare(
+            'SELECT 1 FROM gastos_cabecera g
+             INNER JOIN estatus_gasto eg ON eg.id_estatus_gasto = g.id_estatus_gasto
+             WHERE g.id_gasto_cabecera = :id_gasto_cabecera
+               AND g.eliminado_en IS NULL
+               AND eg.clave = :clave
+               AND eg.activo = 1
+             LIMIT 1'
+        );
+        $statement->execute([
+            'id_gasto_cabecera' => $expenseId,
+            'clave' => 'BORRADOR',
+        ]);
+
+        return $statement->fetchColumn() !== false;
+    }
+
+    public function updateExpense(
+        int $expenseId,
+        int $userId,
+        int $draftStatusId,
+        int $areaId,
+        int $costCenterId,
+        string $expenseDate,
+        ?string $observations
+    ): bool {
+        $statement = $this->db->prepare(
+            'UPDATE gastos_cabecera
+             SET id_area = :id_area,
+                 id_centro_costo = :id_centro_costo,
+                 fecha_gasto = :fecha_gasto,
+                 observaciones = :observaciones,
+                 actualizado_en = CURRENT_TIMESTAMP,
+                 actualizado_por = :actualizado_por
+             WHERE id_gasto_cabecera = :id_gasto_cabecera
+               AND id_usuario = :id_usuario
+               AND id_estatus_gasto = :id_estatus_gasto
+               AND eliminado_en IS NULL'
+        );
+
+        $statement->execute([
+            'id_area' => $areaId,
+            'id_centro_costo' => $costCenterId,
+            'fecha_gasto' => $expenseDate,
+            'observaciones' => $observations !== '' ? $observations : null,
+            'actualizado_por' => $userId,
+            'id_gasto_cabecera' => $expenseId,
+            'id_usuario' => $userId,
+            'id_estatus_gasto' => $draftStatusId,
+        ]);
+
+        return $statement->rowCount() > 0;
+    }
+
     /** @return list<array<string, mixed>> */
     public function listExpensesByUser(int $userId): array
     {
@@ -153,7 +245,8 @@ class ExpenseRepository extends Repository
                     a.nombre AS area_nombre,
                     cc.codigo AS centro_codigo,
                     cc.nombre AS centro_nombre,
-                    eg.nombre AS estatus_nombre
+                    eg.nombre AS estatus_nombre,
+                    eg.clave AS estatus_clave
              FROM gastos_cabecera g
              INNER JOIN areas a ON a.id_area = g.id_area
              INNER JOIN centros_costos cc ON cc.id_centro_costo = g.id_centro_costo
