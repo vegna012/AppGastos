@@ -13,7 +13,8 @@
         <a href="/areas">Áreas</a> |
         <a href="/presupuestos">Presupuestos</a> |
         <a href="/gastos/crear">Gastos</a> |
-        <a href="/mis-gastos">Mis Gastos</a>
+        <a href="/mis-gastos">Mis Gastos</a> |
+        <a href="/aprobaciones">Aprobaciones</a>
     </p>
 
     <form method="post" action="/logout">

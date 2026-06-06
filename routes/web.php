@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Controllers\ApprovalController;
 use App\Controllers\AreaController;
 use App\Controllers\AuthController;
 use App\Controllers\BudgetController;
@@ -41,3 +42,6 @@ $router->get('/gastos/{id}/editar', [ExpenseController::class, 'edit'], [AuthMid
 $router->post('/gastos/{id}/actualizar', [ExpenseController::class, 'update'], [AuthMiddleware::class]);
 $router->post('/gastos/{id}/enviar', [ExpenseController::class, 'send'], [AuthMiddleware::class]);
 $router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddleware::class]);
+
+$router->get('/aprobaciones', [ApprovalController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/aprobaciones/{id}', [ApprovalController::class, 'show'], [AuthMiddleware::class]);
