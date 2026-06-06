@@ -8,13 +8,19 @@
 <body>
     <h1>Bienvenido <?= htmlspecialchars($userName, ENT_QUOTES, 'UTF-8') ?></h1>
 
+    <?php if (!empty($accessError)): ?>
+        <p style="color: red;"><?= htmlspecialchars($accessError, ENT_QUOTES, 'UTF-8') ?></p>
+    <?php endif; ?>
+
     <p>
         <a href="/usuarios">Usuarios</a> |
         <a href="/areas">Áreas</a> |
         <a href="/presupuestos">Presupuestos</a> |
         <a href="/gastos/crear">Gastos</a> |
-        <a href="/mis-gastos">Mis Gastos</a> |
-        <a href="/aprobaciones">Aprobaciones</a>
+        <a href="/mis-gastos">Mis Gastos</a>
+        <?php if (!empty($canAccessApprovals)): ?>
+            | <a href="/aprobaciones">Aprobaciones</a>
+        <?php endif; ?>
     </p>
 
     <form method="post" action="/logout">

@@ -12,8 +12,15 @@ use App\Controllers\HomeController;
 use App\Controllers\UserController;
 use App\Core\Router;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\RoleMiddleware;
+use App\Repositories\RoleRepository;
 
 /** @var Router $router */
+
+$approvalMiddleware = [
+    AuthMiddleware::class,
+    [RoleMiddleware::class, [RoleRepository::approvalRoleNames()]],
+];
 $router->get('/', [HomeController::class, 'index']);
 
 $router->get('/login', [AuthController::class, 'showLogin']);
@@ -44,7 +51,7 @@ $router->post('/gastos/{id}/enviar', [ExpenseController::class, 'send'], [AuthMi
 $router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddleware::class]);
 $router->get('/mis-gastos/{id}', [ExpenseController::class, 'show'], [AuthMiddleware::class]);
 
-$router->get('/aprobaciones', [ApprovalController::class, 'index'], [AuthMiddleware::class]);
-$router->get('/aprobaciones/{id}', [ApprovalController::class, 'show'], [AuthMiddleware::class]);
-$router->post('/aprobaciones/{id}/aprobar', [ApprovalController::class, 'approve'], [AuthMiddleware::class]);
-$router->post('/aprobaciones/{id}/rechazar', [ApprovalController::class, 'reject'], [AuthMiddleware::class]);
+$router->get('/aprobaciones', [ApprovalController::class, 'index'], $approvalMiddleware);
+$router->get('/aprobaciones/{id}', [ApprovalController::class, 'show'], $approvalMiddleware);
+$router->post('/aprobaciones/{id}/aprobar', [ApprovalController::class, 'approve'], $approvalMiddleware);
+$router->post('/aprobaciones/{id}/rechazar', [ApprovalController::class, 'reject'], $approvalMiddleware);

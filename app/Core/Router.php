@@ -98,18 +98,28 @@ class Router
         ];
     }
 
-    /** @param list<class-string> $middleware */
+    /** @param list<class-string|array{0: class-string, 1: list<mixed>}> $middleware */
     private function runMiddleware(array $middleware): void
     {
-        foreach ($middleware as $class) {
-            if (!class_exists($class)) {
-                throw new RuntimeException("Middleware no encontrado: {$class}");
+        foreach ($middleware as $entry) {
+            if (is_string($entry)) {
+                $class = $entry;
+                $instance = new $class();
+            } elseif (is_array($entry) && isset($entry[0]) && is_string($entry[0])) {
+                $class = $entry[0];
+                $params = $entry[1] ?? [];
+
+                if (!is_array($params)) {
+                    throw new RuntimeException('Parámetros de middleware inválidos.');
+                }
+
+                $instance = new $class(...$params);
+            } else {
+                throw new RuntimeException('Middleware inválido.');
             }
 
-            $instance = new $class();
-
             if (!method_exists($instance, 'handle')) {
-                throw new RuntimeException("Middleware sin método handle: {$class}");
+                throw new RuntimeException('Middleware sin método handle: ' . $instance::class);
             }
 
             $instance->handle();
