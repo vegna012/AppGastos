@@ -92,6 +92,28 @@ class ExpenseController extends Controller
         unset($_SESSION['expense_success'], $_SESSION['expense_error']);
     }
 
+    public function show(): void
+    {
+        $userId = $this->requireAuthenticatedUserId();
+        $expenseId = (int) (RouteContext::param('id') ?? 0);
+
+        if ($expenseId <= 0) {
+            $_SESSION['expense_error'] = 'Gasto no encontrado.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $expense = $this->expenseRepository->getExpenseDetailByUser($expenseId, $userId);
+
+        if ($expense === null) {
+            $_SESSION['expense_error'] = 'Gasto no encontrado o no tiene permiso para consultarlo.';
+            $this->redirect('/mis-gastos');
+        }
+
+        $this->render('expenses/show', [
+            'expense' => $expense,
+        ]);
+    }
+
     public function edit(): void
     {
         $userId = $this->requireAuthenticatedUserId();

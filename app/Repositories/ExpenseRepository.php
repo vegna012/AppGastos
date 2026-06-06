@@ -298,4 +298,35 @@ class ExpenseRepository extends Repository
 
         return $statement->fetchAll();
     }
+
+    /** @return array<string, mixed>|null */
+    public function getExpenseDetailByUser(int $expenseId, int $userId): ?array
+    {
+        $statement = $this->db->prepare(
+            'SELECT g.id_gasto_cabecera, g.folio, g.fecha_gasto, g.observaciones,
+                    g.observaciones_aprobacion, g.fecha_aprobacion,
+                    a.nombre AS area_nombre,
+                    cc.codigo AS centro_codigo,
+                    cc.nombre AS centro_nombre,
+                    eg.nombre AS estatus_nombre,
+                    eg.clave AS estatus_clave,
+                    u_aprob.nombre AS aprobador_nombre
+             FROM gastos_cabecera g
+             INNER JOIN areas a ON a.id_area = g.id_area
+             INNER JOIN centros_costos cc ON cc.id_centro_costo = g.id_centro_costo
+             INNER JOIN estatus_gasto eg ON eg.id_estatus_gasto = g.id_estatus_gasto
+             LEFT JOIN usuarios u_aprob ON u_aprob.id_usuario = g.aprobado_por
+             WHERE g.id_gasto_cabecera = :id_gasto_cabecera
+               AND g.id_usuario = :id_usuario
+               AND g.eliminado_en IS NULL
+             LIMIT 1'
+        );
+        $statement->execute([
+            'id_gasto_cabecera' => $expenseId,
+            'id_usuario' => $userId,
+        ]);
+        $expense = $statement->fetch();
+
+        return $expense !== false ? $expense : null;
+    }
 }

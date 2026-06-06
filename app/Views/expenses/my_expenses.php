@@ -27,13 +27,14 @@
                 <th>Centro de costo</th>
                 <th>Estatus</th>
                 <th>Fecha creación</th>
+                <th>Detalle</th>
                 <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             <?php if (empty($expenses)): ?>
                 <tr>
-                    <td colspan="7">No hay gastos registrados.</td>
+                    <td colspan="8">No hay gastos registrados.</td>
                 </tr>
             <?php else: ?>
                 <?php foreach ($expenses as $expense): ?>
@@ -50,6 +51,9 @@
                         </td>
                         <td><?= htmlspecialchars((string) $expense['estatus_nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= htmlspecialchars((string) $expense['creado_en'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td>
+                            <a href="/mis-gastos/<?= (int) $expense['id_gasto_cabecera'] ?>">Ver</a>
+                        </td>
                         <td>
                             <?php if (($expense['estatus_clave'] ?? '') === 'BORRADOR'): ?>
                                 <a href="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/editar">Editar</a>

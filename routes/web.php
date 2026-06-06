@@ -42,6 +42,7 @@ $router->get('/gastos/{id}/editar', [ExpenseController::class, 'edit'], [AuthMid
 $router->post('/gastos/{id}/actualizar', [ExpenseController::class, 'update'], [AuthMiddleware::class]);
 $router->post('/gastos/{id}/enviar', [ExpenseController::class, 'send'], [AuthMiddleware::class]);
 $router->get('/mis-gastos', [ExpenseController::class, 'myExpenses'], [AuthMiddleware::class]);
+$router->get('/mis-gastos/{id}', [ExpenseController::class, 'show'], [AuthMiddleware::class]);
 
 $router->get('/aprobaciones', [ApprovalController::class, 'index'], [AuthMiddleware::class]);
 $router->get('/aprobaciones/{id}', [ApprovalController::class, 'show'], [AuthMiddleware::class]);
