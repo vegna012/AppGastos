@@ -32,12 +32,19 @@ class ExpenseController extends Controller
             $old['fecha_gasto'] = (string) $_GET['fecha_gasto'];
         }
 
+        if (isset($_GET['total'])) {
+            $old['total'] = (string) $_GET['total'];
+        }
+
+        $budgetAvailability = $this->resolveBudgetAvailability($old);
+
         $this->render('expenses/create', [
             'areas' => $this->expenseRepository->getActiveAreas(),
             'costCenters' => $this->expenseRepository->getActiveCostCenters(),
             'errors' => $_SESSION['expense_form_errors'] ?? [],
             'old' => $old,
-            'budgetAvailability' => $this->resolveBudgetAvailability($old),
+            'budgetAvailability' => $budgetAvailability,
+            'exceedsBudgetWarning' => $this->resolveExceedsBudgetWarning($budgetAvailability, $old),
         ]);
 
         unset($_SESSION['expense_form_errors'], $_SESSION['expense_form_old']);
@@ -48,6 +55,8 @@ class ExpenseController extends Controller
         $userId = $this->requireAuthenticatedUserId();
 
         $expenseDateRaw = trim((string) ($_POST['fecha_gasto'] ?? ''));
+        $totalRaw = trim((string) ($_POST['total'] ?? ''));
+        $total = $this->parseExpenseAmount($totalRaw) ?? 0.0;
 
         [$errors, $areaId, $costCenterId, $expenseDate, $observations] = $this->validateExpenseInput(
             (int) ($_POST['id_area'] ?? 0),
@@ -68,6 +77,7 @@ class ExpenseController extends Controller
                 'id_area' => $areaId > 0 ? (string) $areaId : '',
                 'id_centro_costo' => $costCenterId > 0 ? (string) $costCenterId : '',
                 'fecha_gasto' => $expenseDateRaw,
+                'total' => $totalRaw,
                 'observaciones' => $observations,
             ];
             $this->redirect('/gastos/crear');
@@ -82,7 +92,8 @@ class ExpenseController extends Controller
             $costCenterId,
             $draftStatusId,
             $expenseDate,
-            $observations
+            $observations,
+            $total
         );
 
         $_SESSION['expense_success'] = 'Gasto creado correctamente en estado Borrador.';
@@ -380,5 +391,32 @@ class ExpenseController extends Controller
             (int) $parsedDate->format('Y'),
             (int) $parsedDate->format('n')
         );
+    }
+
+    /** @param array<string, string> $old */
+    private function resolveExceedsBudgetWarning(?array $budgetAvailability, array $old): bool
+    {
+        if ($budgetAvailability === null || !$budgetAvailability['configured']) {
+            return false;
+        }
+
+        $amount = $this->parseExpenseAmount(trim((string) ($old['total'] ?? '')));
+
+        if ($amount === null || $amount <= 0) {
+            return false;
+        }
+
+        return $amount > $budgetAvailability['disponible'];
+    }
+
+    private function parseExpenseAmount(string $amountRaw): ?float
+    {
+        if ($amountRaw === '') {
+            return null;
+        }
+
+        $amount = filter_var($amountRaw, FILTER_VALIDATE_FLOAT);
+
+        return $amount !== false ? (float) $amount : null;
     }
 }

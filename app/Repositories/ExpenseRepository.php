@@ -128,15 +128,16 @@ class ExpenseRepository extends Repository
         int $costCenterId,
         int $statusId,
         string $expenseDate,
-        ?string $observations
+        ?string $observations,
+        float $total = 0.0
     ): int {
         $statement = $this->db->prepare(
             'INSERT INTO gastos_cabecera (
                 folio, id_usuario, id_area, id_centro_costo, id_estatus_gasto,
-                fecha_gasto, concepto_general, observaciones, creado_por
+                fecha_gasto, concepto_general, total, observaciones, creado_por
              ) VALUES (
                 :folio, :id_usuario, :id_area, :id_centro_costo, :id_estatus_gasto,
-                :fecha_gasto, :concepto_general, :observaciones, :creado_por
+                :fecha_gasto, :concepto_general, :total, :observaciones, :creado_por
              )'
         );
 
@@ -148,6 +149,7 @@ class ExpenseRepository extends Repository
             'id_estatus_gasto' => $statusId,
             'fecha_gasto' => $expenseDate,
             'concepto_general' => 'Gasto en captura',
+            'total' => $total,
             'observaciones' => $observations !== '' ? $observations : null,
             'creado_por' => $userId,
         ]);

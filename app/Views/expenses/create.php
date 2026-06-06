@@ -55,6 +55,12 @@
                    value="<?= htmlspecialchars((string) ($old['fecha_gasto'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
         </div>
         <br>
+        <div>
+            <label for="total">Monto</label><br>
+            <input type="number" id="total" name="total" min="0" step="0.01"
+                   value="<?= htmlspecialchars((string) ($old['total'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+        </div>
+        <br>
         <?php if ($budgetAvailability !== null): ?>
             <div>
                 <strong>Disponibilidad presupuestal</strong><br>
@@ -68,6 +74,12 @@
                     </p>
                 <?php endif; ?>
             </div>
+            <br>
+        <?php endif; ?>
+        <?php if (!empty($exceedsBudgetWarning)): ?>
+            <p style="color: orange;">
+                Advertencia: el monto capturado supera el presupuesto disponible para el periodo.
+            </p>
             <br>
         <?php endif; ?>
         <div>
