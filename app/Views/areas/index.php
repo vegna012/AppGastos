@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Áreas</title>
-</head>
-<body>
-    <h1>Áreas</h1>
+<?php $pageTitle = 'Áreas'; ?>
 
-    <p><a href="/dashboard">Dashboard</a> | <a href="/usuarios">Usuarios</a> | <a href="/presupuestos">Presupuestos</a> | <a href="/areas/crear">Crear área</a></p>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h3 mb-0">Áreas</h1>
+    <a href="/areas/crear" class="btn btn-primary">Crear área</a>
+</div>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="6" cellspacing="0">
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -47,8 +35,8 @@
                         <td><?= (bool) $area['activo'] ? 'Sí' : 'No' ?></td>
                         <td><?= htmlspecialchars((string) $area['creado_en'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td>
-                            <form method="post" action="/areas/<?= (int) $area['id_area'] ?>/estado" style="display:inline;">
-                                <button type="submit">
+                            <form method="post" action="/areas/<?= (int) $area['id_area'] ?>/estado" class="d-inline">
+                                <button type="submit" class="btn btn-sm <?= (bool) $area['activo'] ? 'btn-secondary' : 'btn-success' ?>">
                                     <?= (bool) $area['activo'] ? 'Desactivar' : 'Activar' ?>
                                 </button>
                             </form>
@@ -58,5 +46,4 @@
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>

@@ -1,29 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar sesión</title>
-</head>
-<body>
-    <h1>Iniciar sesión</h1>
+<div class="card shadow-sm">
+    <div class="card-body p-4">
+        <h1 class="h4 mb-4 text-center">Iniciar sesión</h1>
 
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger" role="alert">
+                <?= htmlspecialchars((string) $error, ENT_QUOTES, 'UTF-8') ?>
+            </div>
+        <?php endif; ?>
 
-    <form method="post" action="/login">
-        <div>
-            <label for="correo">Correo</label><br>
-            <input type="email" id="correo" name="correo" required autocomplete="username">
-        </div>
-        <br>
-        <div>
-            <label for="password">Contraseña</label><br>
-            <input type="password" id="password" name="password" required autocomplete="current-password">
-        </div>
-        <br>
-        <button type="submit">Ingresar</button>
-    </form>
-</body>
-</html>
+        <form method="post" action="/login">
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo</label>
+                <input type="email" class="form-control" id="correo" name="correo" required autocomplete="username">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+        </form>
+    </div>
+</div>

@@ -1,28 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Presupuestos</title>
-</head>
-<body>
-    <h1>Presupuestos</h1>
+<?php $pageTitle = 'Presupuestos'; ?>
 
-    <p>
-        <a href="/dashboard">Dashboard</a> |
-        <a href="/areas">Áreas</a> |
-        <a href="/presupuestos/crear">Crear presupuesto</a>
-    </p>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h3 mb-0">Presupuestos</h1>
+    <a href="/presupuestos/crear" class="btn btn-primary">Crear presupuesto</a>
+</div>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="6" cellspacing="0">
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Área</th>
@@ -50,5 +34,4 @@
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>

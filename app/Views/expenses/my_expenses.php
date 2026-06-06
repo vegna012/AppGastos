@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis gastos</title>
-</head>
-<body>
-    <h1>Mis gastos</h1>
+<?php $pageTitle = 'Mis gastos'; ?>
 
-    <p><a href="/dashboard">Dashboard</a> | <a href="/gastos/crear">Crear gasto</a></p>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h3 mb-0">Mis gastos</h1>
+    <a href="/gastos/crear" class="btn btn-primary">Crear gasto</a>
+</div>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="6" cellspacing="0">
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>ID</th>
@@ -52,16 +40,15 @@
                         <td><?= htmlspecialchars((string) $expense['estatus_nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= htmlspecialchars((string) $expense['creado_en'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td>
-                            <a href="/mis-gastos/<?= (int) $expense['id_gasto_cabecera'] ?>">Ver</a>
+                            <a href="/mis-gastos/<?= (int) $expense['id_gasto_cabecera'] ?>" class="btn btn-sm btn-secondary">Ver</a>
                         </td>
                         <td>
                             <?php if (($expense['estatus_clave'] ?? '') === 'BORRADOR'): ?>
-                                <a href="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/editar">Editar</a>
-                                |
+                                <a href="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/editar" class="btn btn-sm btn-primary">Editar</a>
                                 <form method="post"
                                       action="/gastos/<?= (int) $expense['id_gasto_cabecera'] ?>/enviar"
-                                      style="display:inline;">
-                                    <button type="submit">Enviar</button>
+                                      class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-success">Enviar</button>
                                 </form>
                             <?php else: ?>
                                 —
@@ -72,5 +59,4 @@
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>

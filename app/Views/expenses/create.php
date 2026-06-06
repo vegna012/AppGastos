@@ -1,27 +1,30 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear gasto</title>
-</head>
-<body>
-    <h1>Crear gasto</h1>
+<?php $pageTitle = 'Crear gasto'; ?>
 
-    <p><a href="/dashboard">Dashboard</a> | <a href="/mis-gastos">Mis gastos</a></p>
+<div class="page-header">
+    <h1 class="h3 mb-3">Crear gasto</h1>
+    <div class="page-actions">
+        <a href="/mis-gastos" class="btn btn-secondary btn-sm">Mis gastos</a>
+    </div>
+</div>
 
-    <?php if (!empty($errors)): ?>
-        <ul style="color: red;">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
+<form method="post" action="/gastos" class="col-lg-8">
+    <div class="mb-3">
+        <label for="id_area" class="form-label">Área</label>
+        <select class="form-select" id="id_area" name="id_area" required>
+            <option value="">Seleccione un área</option>
+            <?php foreach ($areas as $area): ?>
+                <option value="<?= (int) $area['id_area'] ?>"
+                    <?= ((string) ($old['id_area'] ?? '') === (string) $area['id_area']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars((string) $area['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                </option>
             <?php endforeach; ?>
         </ul>
     <?php endif; ?>
 
     <form method="post" action="/gastos">
-        <div>
-            <label for="id_area">Área</label><br>
-            <select id="id_area" name="id_area" required>
+        <div class="mb-3">
+            <label for="id_area" class="form-label">Área</label>
+            <select class="form-select" id="id_area" name="id_area" required>
                 <option value="">Seleccione un área</option>
                 <?php foreach ($areas as $area): ?>
                     <option value="<?= (int) $area['id_area'] ?>"
@@ -31,10 +34,10 @@
                 <?php endforeach; ?>
             </select>
         </div>
-        <br>
-        <div>
-            <label for="id_centro_costo">Centro de costo</label><br>
-            <select id="id_centro_costo" name="id_centro_costo" required>
+
+        <div class="mb-3">
+            <label for="id_centro_costo" class="form-label">Centro de costo</label>
+            <select class="form-select" id="id_centro_costo" name="id_centro_costo" required>
                 <option value="">Seleccione un centro de costo</option>
                 <?php foreach ($costCenters as $center): ?>
                     <option value="<?= (int) $center['id_centro_costo'] ?>"
@@ -48,49 +51,51 @@
                 <?php endforeach; ?>
             </select>
         </div>
-        <br>
-        <div>
-            <label for="fecha_gasto">Fecha gasto</label><br>
-            <input type="date" id="fecha_gasto" name="fecha_gasto" required
+
+        <div class="mb-3">
+            <label for="fecha_gasto" class="form-label">Fecha gasto</label>
+            <input type="date" class="form-control" id="fecha_gasto" name="fecha_gasto" required
                    value="<?= htmlspecialchars((string) ($old['fecha_gasto'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
         </div>
-        <br>
-        <div>
-            <label for="total">Monto</label><br>
-            <input type="number" id="total" name="total" min="0" step="0.01"
+
+        <div class="mb-3">
+            <label for="total" class="form-label">Monto</label>
+            <input type="number" class="form-control" id="total" name="total" min="0" step="0.01"
                    value="<?= htmlspecialchars((string) ($old['total'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
         </div>
-        <br>
+
         <?php if ($budgetAvailability !== null): ?>
-            <div>
+            <div class="alert alert-info">
                 <strong>Disponibilidad presupuestal</strong><br>
+
                 <?php if (!$budgetAvailability['configured']): ?>
-                    <p>Sin presupuesto configurado para el periodo.</p>
+                    <p class="mb-0">Sin presupuesto configurado para el periodo.</p>
                 <?php else: ?>
-                    <p>
+                    <p class="mb-0">
                         Presupuesto: $<?= htmlspecialchars(number_format($budgetAvailability['presupuesto'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?><br>
                         Consumo: $<?= htmlspecialchars(number_format($budgetAvailability['consumo'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?><br>
                         Disponible: $<?= htmlspecialchars(number_format($budgetAvailability['disponible'], 2, '.', ','), ENT_QUOTES, 'UTF-8') ?>
                     </p>
                 <?php endif; ?>
             </div>
-            <br>
         <?php endif; ?>
+
         <?php if (!empty($exceedsBudgetWarning)): ?>
-            <p style="color: orange;">
+            <div class="alert alert-warning">
                 Advertencia: el monto capturado supera el presupuesto disponible para el periodo.
-            </p>
-            <br>
+            </div>
         <?php endif; ?>
-        <div>
-            <label for="observaciones">Observaciones (opcional)</label><br>
-            <textarea id="observaciones" name="observaciones" rows="4" cols="50"><?= htmlspecialchars((string) ($old['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
+
+        <div class="mb-4">
+            <label for="observaciones" class="form-label">Observaciones (opcional)</label>
+            <textarea class="form-control" id="observaciones" name="observaciones" rows="4"><?= htmlspecialchars((string) ($old['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
         </div>
-        <br>
-        <button type="submit" formaction="/gastos/crear" formmethod="get" formnovalidate>
+
+        <button type="submit" class="btn btn-secondary" formaction="/gastos/crear" formmethod="get" formnovalidate>
             Consultar presupuesto
         </button>
-        <button type="submit">Guardar</button>
+
+        <button type="submit" class="btn btn-primary">
+            Guardar
+        </button>
     </form>
-</body>
-</html>

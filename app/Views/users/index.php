@@ -1,24 +1,12 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios</title>
-</head>
-<body>
-    <h1>Usuarios</h1>
+<?php $pageTitle = 'Usuarios'; ?>
 
-    <p><a href="/dashboard">Dashboard</a> | <a href="/areas">Áreas</a> | <a href="/usuarios/crear">Crear usuario</a></p>
+<div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+    <h1 class="h3 mb-0">Usuarios</h1>
+    <a href="/usuarios/crear" class="btn btn-primary">Crear usuario</a>
+</div>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="6" cellspacing="0">
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -43,8 +31,8 @@
                         <td><?= htmlspecialchars((string) $user['area_nombre'], ENT_QUOTES, 'UTF-8') ?></td>
                         <td><?= (bool) $user['activo'] ? 'Sí' : 'No' ?></td>
                         <td>
-                            <form method="post" action="/usuarios/<?= (int) $user['id_usuario'] ?>/estado" style="display:inline;">
-                                <button type="submit">
+                            <form method="post" action="/usuarios/<?= (int) $user['id_usuario'] ?>/estado" class="d-inline">
+                                <button type="submit" class="btn btn-sm <?= (bool) $user['activo'] ? 'btn-secondary' : 'btn-success' ?>">
                                     <?= (bool) $user['activo'] ? 'Desactivar' : 'Activar' ?>
                                 </button>
                             </form>
@@ -54,5 +42,4 @@
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>

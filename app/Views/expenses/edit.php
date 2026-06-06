@@ -1,66 +1,49 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar gasto</title>
-</head>
-<body>
-    <h1>Editar gasto #<?= (int) $expenseId ?></h1>
+<?php $pageTitle = 'Editar gasto'; ?>
 
-    <p><a href="/mis-gastos">Volver a mis gastos</a></p>
+<div class="page-header">
+    <h1 class="h3 mb-3">Editar gasto #<?= (int) $expenseId ?></h1>
+    <div class="page-actions">
+        <a href="/mis-gastos" class="btn btn-secondary btn-sm">Volver a mis gastos</a>
+    </div>
+</div>
 
-    <?php if (!empty($errors)): ?>
-        <ul style="color: red;">
-            <?php foreach ($errors as $error): ?>
-                <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
+<form method="post" action="/gastos/<?= (int) $expenseId ?>/actualizar" class="col-lg-8">
+    <div class="mb-3">
+        <label for="id_area" class="form-label">Área</label>
+        <select class="form-select" id="id_area" name="id_area" required>
+            <option value="">Seleccione un área</option>
+            <?php foreach ($areas as $area): ?>
+                <option value="<?= (int) $area['id_area'] ?>"
+                    <?= ((string) ($old['id_area'] ?? '') === (string) $area['id_area']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars((string) $area['nombre'], ENT_QUOTES, 'UTF-8') ?>
+                </option>
             <?php endforeach; ?>
-        </ul>
-    <?php endif; ?>
-
-    <form method="post" action="/gastos/<?= (int) $expenseId ?>/actualizar">
-        <div>
-            <label for="id_area">Área</label><br>
-            <select id="id_area" name="id_area" required>
-                <option value="">Seleccione un área</option>
-                <?php foreach ($areas as $area): ?>
-                    <option value="<?= (int) $area['id_area'] ?>"
-                        <?= ((string) ($old['id_area'] ?? '') === (string) $area['id_area']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars((string) $area['nombre'], ENT_QUOTES, 'UTF-8') ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <br>
-        <div>
-            <label for="id_centro_costo">Centro de costo</label><br>
-            <select id="id_centro_costo" name="id_centro_costo" required>
-                <option value="">Seleccione un centro de costo</option>
-                <?php foreach ($costCenters as $center): ?>
-                    <option value="<?= (int) $center['id_centro_costo'] ?>"
-                        <?= ((string) ($old['id_centro_costo'] ?? '') === (string) $center['id_centro_costo']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars(
-                            (string) $center['area_nombre'] . ' — ' . $center['codigo'] . ' — ' . $center['nombre'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        ) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <br>
-        <div>
-            <label for="fecha_gasto">Fecha gasto</label><br>
-            <input type="date" id="fecha_gasto" name="fecha_gasto" required
-                   value="<?= htmlspecialchars((string) ($old['fecha_gasto'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
-        </div>
-        <br>
-        <div>
-            <label for="observaciones">Observaciones (opcional)</label><br>
-            <textarea id="observaciones" name="observaciones" rows="4" cols="50"><?= htmlspecialchars((string) ($old['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
-        </div>
-        <br>
-        <button type="submit">Actualizar</button>
-    </form>
-</body>
-</html>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="id_centro_costo" class="form-label">Centro de costo</label>
+        <select class="form-select" id="id_centro_costo" name="id_centro_costo" required>
+            <option value="">Seleccione un centro de costo</option>
+            <?php foreach ($costCenters as $center): ?>
+                <option value="<?= (int) $center['id_centro_costo'] ?>"
+                    <?= ((string) ($old['id_centro_costo'] ?? '') === (string) $center['id_centro_costo']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars(
+                        (string) $center['area_nombre'] . ' — ' . $center['codigo'] . ' — ' . $center['nombre'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    ) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="fecha_gasto" class="form-label">Fecha gasto</label>
+        <input type="date" class="form-control" id="fecha_gasto" name="fecha_gasto" required
+               value="<?= htmlspecialchars((string) ($old['fecha_gasto'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+    </div>
+    <div class="mb-4">
+        <label for="observaciones" class="form-label">Observaciones (opcional)</label>
+        <textarea class="form-control" id="observaciones" name="observaciones" rows="4"><?= htmlspecialchars((string) ($old['observaciones'] ?? ''), ENT_QUOTES, 'UTF-8') ?></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Actualizar</button>
+</form>

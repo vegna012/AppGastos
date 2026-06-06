@@ -1,24 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bandeja de aprobaciones</title>
-</head>
-<body>
-    <h1>Bandeja de aprobaciones</h1>
+<?php
+$pageTitle = 'Bandeja de aprobaciones';
+$containerClass = 'container-fluid';
+?>
 
-    <p><a href="/dashboard">Dashboard</a></p>
+<div class="page-header">
+    <h1 class="h3 mb-0">Bandeja de aprobaciones</h1>
+</div>
 
-    <?php if (!empty($success)): ?>
-        <p style="color: green;"><?= htmlspecialchars($success, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($error)): ?>
-        <p style="color: red;"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></p>
-    <?php endif; ?>
-
-    <table border="1" cellpadding="6" cellspacing="0">
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th>Folio</th>
@@ -59,12 +49,11 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a href="/aprobaciones/<?= (int) $expense['id_gasto_cabecera'] ?>">Ver detalle</a>
+                            <a href="/aprobaciones/<?= (int) $expense['id_gasto_cabecera'] ?>" class="btn btn-sm btn-primary">Ver detalle</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
             <?php endif; ?>
         </tbody>
     </table>
-</body>
-</html>
+</div>

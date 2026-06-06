@@ -24,6 +24,9 @@ class AuthController extends Controller
 
         $this->render('auth/login', [
             'error' => $_SESSION['login_error'] ?? null,
+            'pageTitle' => 'Iniciar sesión',
+        ], [
+            'layout' => 'layouts/auth',
         ]);
 
         unset($_SESSION['login_error']);

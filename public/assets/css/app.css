@@ -1,0 +1,41 @@
+body {
+    background-color: #f4f6f9;
+}
+
+main.app-main {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-title {
+    margin-bottom: 0.75rem;
+}
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-color: #e9ecef;
+}
+
+.auth-page main {
+    width: 100%;
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.page-actions {
+    margin-bottom: 1rem;
+}
