@@ -70,6 +70,38 @@ class ApprovalRepository extends Repository
         return $statement->rowCount() > 0;
     }
 
+    public function rejectExpense(
+        int $expenseId,
+        int $rejectorId,
+        int $sentStatusId,
+        int $rejectedStatusId,
+        string $rejectionReason
+    ): bool {
+        $statement = $this->db->prepare(
+            'UPDATE gastos_cabecera
+             SET id_estatus_gasto = :id_estatus_gasto,
+                 observaciones_aprobacion = :observaciones_aprobacion,
+                 fecha_aprobacion = CURRENT_TIMESTAMP,
+                 aprobado_por = :aprobado_por,
+                 actualizado_en = CURRENT_TIMESTAMP,
+                 actualizado_por = :actualizado_por
+             WHERE id_gasto_cabecera = :id_gasto_cabecera
+               AND id_estatus_gasto = :id_estatus_enviado
+               AND eliminado_en IS NULL'
+        );
+
+        $statement->execute([
+            'id_estatus_gasto' => $rejectedStatusId,
+            'observaciones_aprobacion' => $rejectionReason,
+            'aprobado_por' => $rejectorId,
+            'actualizado_por' => $rejectorId,
+            'id_gasto_cabecera' => $expenseId,
+            'id_estatus_enviado' => $sentStatusId,
+        ]);
+
+        return $statement->rowCount() > 0;
+    }
+
     /** @return list<array<string, mixed>> */
     public function listSentExpenses(): array
     {

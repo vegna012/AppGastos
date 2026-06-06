@@ -71,6 +71,25 @@
         <form method="post" action="/aprobaciones/<?= (int) $expense['id_gasto_cabecera'] ?>/aprobar">
             <button type="submit">Aprobar</button>
         </form>
+
+        <details <?= !empty($rejectErrors) ? 'open' : '' ?>>
+            <summary>Rechazar</summary>
+            <?php if (!empty($rejectErrors)): ?>
+                <ul style="color: red;">
+                    <?php foreach ($rejectErrors as $error): ?>
+                        <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+            <form method="post" action="/aprobaciones/<?= (int) $expense['id_gasto_cabecera'] ?>/rechazar">
+                <div>
+                    <label for="motivo_rechazo">Motivo del rechazo</label><br>
+                    <textarea id="motivo_rechazo" name="motivo_rechazo" rows="4" cols="50" required><?= htmlspecialchars((string) $rejectReason, ENT_QUOTES, 'UTF-8') ?></textarea>
+                </div>
+                <br>
+                <button type="submit">Confirmar rechazo</button>
+            </form>
+        </details>
     <?php endif; ?>
 </body>
 </html>
